@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Budget & Savings Tracker 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --input-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --bg: #020617;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --input-bg: #0f172a;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { color: white; font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; }
+        .nav-actions { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+        }
+
+        .btn-theme { background: var(--primary); color: white; }
+        .btn-pdf { background: #475569; color: white; }
+        .btn-save { background: var(--success); color: white; margin-top: 20px; width: 100%; }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        h2 { margin-top: 0; font-size: 1.5rem; text-align: center; }
+
+        .section-title { 
+            color: var(--primary); 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin: 25px 0 15px; 
+            font-weight: 800;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text); opacity: 0.8; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+        /* --- Dashboard --- */
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .stat-card { background: var(--input-bg); padding: 20px; border-radius: 18px; text-align: center; border: 1px solid var(--border); }
+        .stat-card small { color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; }
+        .stat-card h3 { margin: 10px 0 0; font-size: 1.4rem; color: var(--text); }
+
+        #advice { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 700; font-size: 0.95rem; }
+        .safe { background: #dcfce7; color: #166534; }
+        .warning { background: #fef3c7; color: #92400e; }
+        .danger { background: #fee2e2; color: #991b1b; }
+
+        /* --- Goal Area --- */
+        .goal-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 2px dashed var(--primary);
+            padding: 25px;
+            border-radius: 20px;
+        }
+
+        @media print {
+            nav, .btn-save { display: none !important; }
+            body { background: white; }
+            .container { margin: 0; width: 100%; max-width: 100%; }
+            .card { box-shadow: none; border: 1px solid #eee; }
+        }
+
+        @media (max-width: 600px) { .dashboard { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body data-theme="light">
+
+<nav>
+    <div class="logo">FINTRACK PRO</div>
+    <div class="nav-actions">
+        <button class="btn btn-theme" onclick="toggleTheme()">🌓 Theme</button>
+        <button class="btn btn-pdf" onclick="window.print()">🖨️ Export PDF</button>
+    </div>
+</nav>
+
+<div class="container">
+    <form action="/submit-budget" method="POST">
+        <div class="card">
+            <h2>📊 MyBudgetMate</h2>
+            
+            <div class="input-group">
+                <label>Monthly Take-Home Salary</label>
+                <input type="number" id="income" name="income" placeholder="50000" oninput="calculate()">
+            </div>
+
+            <div class="section-title">Monthly 'Needs' (Fixed Costs)</div>
+            <div class="grid">
+                <div class="input-group">
+                    <label>Rent or Home Loan EMI</label>
+                    <input type="number" id="rent" name="rent" placeholder="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Electricity, Water, & Gas</label>
+                    <input type="number" id="utilities" name="utilities" placeholder="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Monthly Groceries & Milk</label>
+                    <input type="number" id="groceries" name="groceries" placeholder="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Internet & Mobile Recharge</label>
+                    <input type="number" id="recharge" name="recharge" placeholder="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Fuel or Public Transport</label>
+                    <input type="number" id="transport" name="transport" placeholder="0" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="section-title">Monthly 'Wants' (Lifestyle)</div>
+            <div class="grid">
+                <div class="input-group">
+                    <label>Dining & Food Delivery</label>
+                    <input type="number" id="dining" name="dining" placeholder="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>OTT Subs & Movies</label>
+                    <input type="number" id="ott" name="ott" placeholder="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Shopping & Other Expenses</label>
+                    <input type="number" id="shopping" name="shopping" placeholder="0" oninput="calculate()">
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="stat-card">
+                    <small>Total Expenses</small>
+                    <h3 id="resExp">₹0</h3>
+                </div>
+                <div class="stat-card">
+                    <small>Monthly Savings</small>
+                    <h3 id="resSav">₹0</h3>
+                </div>
+                <div class="stat-card">
+                    <small>Savings Rate</small>
+                    <h3 id="resRate">0%</h3>
+                </div>
+            </div>
+
+            <div id="advice">Enter your salary to see the summary.</div>
+            
+            <button type="submit" class="btn btn-save">💾 Save Data to Python Backend</button>
+        </div>
+
+        <div class="card goal-box">
+            <div class="section-title" style="margin-top: 0; border: none;">🎯 Future Goal Tracker</div>
+            <div class="grid">
+                <div class="input-group">
+                    <label>Goal Price (Car, House, etc.)</label>
+                    <input type="number" id="goalPrice" name="goal_price" placeholder="e.g. 500000" oninput="calculate()">
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <label>Estimated Timeline</label>
+                    <div id="goalResult" style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">--</div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const current = body.getAttribute('data-theme');
+        body.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function calculate() {
+        const income = parseFloat(document.getElementById('income').value) || 0;
+        const needs = (parseFloat(document.getElementById('rent').value) || 0) +
+                      (parseFloat(document.getElementById('utilities').value) || 0) +
+                      (parseFloat(document.getElementById('groceries').value) || 0) +
+                      (parseFloat(document.getElementById('recharge').value) || 0) +
+                      (parseFloat(document.getElementById('transport').value) || 0);
+
+        const wants = (parseFloat(document.getElementById('dining').value) || 0) +
+                      (parseFloat(document.getElementById('ott').value) || 0) +
+                      (parseFloat(document.getElementById('shopping').value) || 0);
+
+        const totalExpenses = needs + wants;
+        const savings = income - totalExpenses;
+        const savingsRate = income > 0 ? (savings / income) * 100 : 0;
+
+        document.getElementById('resExp').innerText = "₹" + totalExpenses.toLocaleString();
+        document.getElementById('resSav').innerText = "₹" + (savings > 0 ? savings.toLocaleString() : 0);
+        document.getElementById('resRate').innerText = savingsRate.toFixed(1) + "%";
+
+        const adviceBox = document.getElementById('advice');
+        if (income === 0) {
+            adviceBox.className = "";
+            adviceBox.innerText = "Enter your salary to see the summary.";
+        } else if (savings < 0) {
+            adviceBox.className = "danger";
+            adviceBox.innerText = "Warning: You are spending more than you earn!";
+        } else if (savingsRate >= 20) {
+            adviceBox.className = "safe";
+            adviceBox.innerText = "Excellent! You are meeting the recommended 20% savings goal.";
+        } else {
+            adviceBox.className = "warning";
+            adviceBox.innerText = "Tip: Your savings rate is " + savingsRate.toFixed(1) + "%. Try to reach the 20% goal.";
+        }
+
+        const goalPrice = parseFloat(document.getElementById('goalPrice').value) || 0;
+        const goalResult = document.getElementById('goalResult');
+
+        if (goalPrice <= 0) {
+            goalResult.innerText = "--";
+        } else if (savings <= 0) {
+            goalResult.innerText = "Savings Required";
+            goalResult.style.color = "var(--danger)";
+        } else {
+            const months = Math.ceil(goalPrice / savings);
+            const years = (months / 12).toFixed(1);
+            goalResult.innerText = months + " Months (" + years + " Years)";
+            goalResult.style.color = "var(--primary)";
+        }
+    }
+</script>
+</body>
+</html>
